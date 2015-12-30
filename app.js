@@ -25,7 +25,7 @@ app.get('/log', function (req, res) {
 
 app.get('/log/:tag', function (req, res) {
   db.serialize(function() {
-    db.all('SELECT log, created_at FROM logs WHERE tag = ? ORDER BY created_at DESC', req.params.tag, function(err, rows) {
+    db.all('SELECT tag, log, created_at FROM logs WHERE tag = ? ORDER BY created_at DESC', req.params.tag, function(err, rows) {
       res.render('index', { title: 'Logs', rows: rows, tag: false});
     });
   });
@@ -34,14 +34,10 @@ app.get('/log/:tag', function (req, res) {
 app.post('/log', function (req, res) {
   data = req.body;
   db.serialize(function() {
-    db.run("INSERT INTO logs (tag, log, created_at) VALUES (?, ?, ?)", req.body.tag, req.body.log, (new Date().getTime()));
-    var logs = ["000"];
+    db.run("INSERT INTO logs (tag, log, created_at) VALUES (?, ?, ?)", data.tag, data.log, (new Date().getTime()));
     db.all("SELECT id FROM logs", function(err, rows){
       if (!err) {
-        for (var i = 0, l = rows.length; i < l; i++) {
-          logs.push(rows[i]["id"]);
-        }
-        res.send("logs: " + logs.join("\n"));
+        res.send("success");
       } else {
         res.send("failed. error: " + err);
       }
@@ -52,6 +48,5 @@ app.post('/log', function (req, res) {
 var server = app.listen(3001, function () {
   var host = server.address().address;
   var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log('web-logger listening at http://%s:%s', host, port);
 });
