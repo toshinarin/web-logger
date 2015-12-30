@@ -17,4 +17,5 @@ node app.js
 
 ```
 curl -H "Content-type: application/json" -d '{"tag": "aaa", "log": "hello log"}' http://localhost:3001/log
+curl -H "Content-type: text/plain" -d 'hello log' http://localhost:3001/log/aaa
 ```
