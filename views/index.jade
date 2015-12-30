@@ -1,0 +1,20 @@
+html
+  head
+    title!= title
+    link(rel='stylesheet', href='/css/bootstrap.css')
+  body
+    div.container
+      div.row
+        table.table.table-bordered
+          thead
+            tr
+              th.col-sm-2 tag
+              th.col-sm-2 date
+              th log
+          each val in rows
+            tr
+              td= val.tag
+              td.date= val.created_at
+              td= val.log
+
+    script(src='js/convert_date.js')

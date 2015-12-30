@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS logs;
+CREATE TABLE logs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tag TEXT,
+  log TEXT,
+  created_at INTEGER
+);
