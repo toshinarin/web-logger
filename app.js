@@ -12,6 +12,7 @@ var db = new sqlite3.Database('db.sqlite3');
 
 // all environments
 app.use(bodyParser.json())
+app.use(bodyParser.text())
 app.set('view engine', 'jade');
 app.use(express.static('public'));
 
@@ -31,10 +32,25 @@ app.get('/log/:tag', function (req, res) {
   });
 });
 
+// Content-type: application/json
 app.post('/log', function (req, res) {
   data = req.body;
   db.serialize(function() {
     db.run("INSERT INTO logs (tag, log, created_at) VALUES (?, ?, ?)", data.tag, data.log, (new Date().getTime()));
+    db.all("SELECT id FROM logs", function(err, rows){
+      if (!err) {
+        res.send("success");
+      } else {
+        res.send("failed. error: " + err);
+      }
+    });
+  });
+});
+
+// Content-type: text/plain
+app.post('/log/:tag', function (req, res) {
+  db.serialize(function() {
+    db.run("INSERT INTO logs (tag, log, created_at) VALUES (?, ?, ?)", req.params.tag, req.body, (new Date().getTime()));
     db.all("SELECT id FROM logs", function(err, rows){
       if (!err) {
         res.send("success");
